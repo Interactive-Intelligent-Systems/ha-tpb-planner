@@ -117,21 +117,13 @@ initially:
 	%% Observation environment
 	sound(3). light(3). guides(1).
 
-	%attitude_stress(1). normative_stress(1). control_stress(1). %% 111	(1)
-	%attitude_stress(1). normative_stress(1). control_stress(3). %% 113	(3)
-	%attitude_stress(1). normative_stress(3). control_stress(3). %% 133	(9)
-	%attitude_stress(2). normative_stress(3). control_stress(3). %% 233	(18)
-	%attitude_stress(3). normative_stress(3). control_stress(1). %% 331	(25)
-	attitude_stress(3). normative_stress(3). control_stress(3). %% 333	(27)	
+	%% Observation human
+	attitude_stress(3). normative_stress(3). control_stress(3). 	
 	
-	%at(human,lobby).
-	%at(human,queue).
-	at(human,food).
-	
+	at(human,lobby).
+
 	noConcurrency.
 
 goal: 
 
-	%at(human,queue) ? (4)
-	%at(human,food) ? (6)
-	at(human,table) ? (6)
+	at(human,queue) ? (4)

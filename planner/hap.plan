@@ -1,0 +1,137 @@
+fluents:
+
+	%% ENVIRONMENT %%
+	sound(L) requires #int(L).	%% Higher sound aggregates attitude stress
+	light(L) requires #int(L). 	%% Higher light aggregates normative stress
+	guides(L) requires #int(L). %% Higher guides relieves control stress
+	
+	%% USER %%	
+    attitude_stress(X) requires #int(X).	%% Figurative attitude stress of the user
+    normative_stress(X) requires #int(X).	%% Figurative normative stress of the user
+    control_stress(X) requires #int(X).		%% Figurative control stress of the user
+	at(O,L) requires actor(O), area(L).	%% Figurative location of the user
+
+actions: 
+
+	increase_sound(L) requires #int(L).
+	decrease_sound(L) requires #int(L).
+
+	increase_light(L) requires #int(L).
+	decrease_light(L) requires #int(L).
+
+	increase_guides(L) requires #int(L).
+	decrease_guides(L) requires #int(L).	
+
+	move(L) requires area(L). %#int(L).
+
+always: 
+
+	%% SOUND ACTIONS %%
+	caused sound(L) after increase_sound(L).
+	caused sound(L) after decrease_sound(L).
+    caused -sound(L) after increase_sound(L1), sound(L), L1=L+1. %L<>L1.
+    caused -sound(L1) after decrease_sound(L), sound(L1), L1=L+1. %L<>L1.
+	
+	caused attitude_stress(X1) after increase_sound(L), attitude_stress(X), X1=X+1.
+	caused -attitude_stress(X1) after increase_sound(L), attitude_stress(X1).
+	
+	caused attitude_stress(X) after decrease_sound(L), attitude_stress(X1), X1=X+1.
+	caused -attitude_stress(X1) after decrease_sound(L), attitude_stress(X1).
+	
+	executable increase_sound(2) if sound(1), attitude_stress(1).
+	executable increase_sound(2) if sound(1), attitude_stress(2).
+	executable increase_sound(3) if sound(2), attitude_stress(1).
+	executable increase_sound(3) if sound(2), attitude_stress(2).
+	executable decrease_sound(2) if sound(3), attitude_stress(3).
+	executable decrease_sound(2) if sound(3), attitude_stress(2).
+	executable decrease_sound(1) if sound(2), attitude_stress(3).
+	executable decrease_sound(1) if sound(2), attitude_stress(2).
+
+	%% LIGHT ACTIONS %%
+	caused light(L) after increase_light(L).
+	caused light(L) after decrease_light(L).
+    caused -light(L) after increase_light(L1), light(L), L1=L+1. %L<>L1.
+    caused -light(L1) after decrease_light(L), light(L1), L1=L+1. %L<>L1.
+
+	caused normative_stress(X1) after increase_light(L), normative_stress(X), X1=X+1.
+	caused -normative_stress(X1) after increase_light(L), normative_stress(X1).
+	
+	caused normative_stress(X) after decrease_light(L), normative_stress(X1), X1=X+1.
+	caused -normative_stress(X1) after decrease_light(L), normative_stress(X1).
+
+	executable increase_light(2) if light(1), normative_stress(1).
+	executable increase_light(2) if light(1), normative_stress(2).
+	executable increase_light(3) if light(2), normative_stress(1).
+	executable increase_light(3) if light(2), normative_stress(2).
+	executable decrease_light(2) if light(3), normative_stress(3).
+	executable decrease_light(2) if light(3), normative_stress(2).
+	executable decrease_light(1) if light(2), normative_stress(3).
+	executable decrease_light(1) if light(2), normative_stress(2).
+
+	%% GUIDES ACTIONS %%
+	caused guides(L) after increase_guides(L).
+	caused guides(L) after decrease_guides(L).
+    caused -guides(L) after increase_guides(L1), guides(L), L1=L+1. %L<>L1.
+    caused -guides(L1) after decrease_guides(L), guides(L1), L1=L+1. %L<>L1.
+
+	caused control_stress(X1) after decrease_guides(L), control_stress(X), X1=X+1.
+	caused -control_stress(X1) after decrease_guides(L), control_stress(X1).
+	
+	caused control_stress(X) after increase_guides(L), control_stress(X1), X1=X+1.
+	caused -control_stress(X1) after increase_guides(L), control_stress(X1).
+
+	executable increase_guides(2) if guides(1), control_stress(3).
+	executable increase_guides(2) if guides(1), control_stress(2).
+	executable increase_guides(3) if guides(2), control_stress(3).
+	executable increase_guides(3) if guides(2), control_stress(2).
+	executable decrease_guides(2) if guides(3), control_stress(1).
+	executable decrease_guides(2) if guides(3), control_stress(2).
+	executable decrease_guides(1) if guides(2), control_stress(1).
+	executable decrease_guides(1) if guides(2), control_stress(2).
+	
+	%% FIGURATIVE move %%
+	caused at(human,L) after move(L).
+	
+    caused -at(human,L) after move(L1), at(human,L), L<>L1. %L1=L+1.
+	caused control_stress(X1) after move(L), control_stress(X), X1=X+1.
+	
+	%% move STRESS-CONSTRAINTS FOR EACH TRANSITION (TAILORED ALLOWED STRESS)
+	%% --- move to queue from lobby %%
+	executable move(queue) if at(human,lobby), attitude_stress(A), A<3, normative_stress(N), N<3, control_stress(C), C<3.
+	%% --- move to food from queue %%
+	executable move(food) if at(human,queue), attitude_stress(A), A<3, normative_stress(N), N<3, control_stress(C), C<2.
+	%% --- move to table from food %%
+	executable move(table) if at(human,food), attitude_stress(A), A<2, normative_stress(N), N<2, control_stress(C), C<3.
+	
+	%% EXTRA %%	
+    inertial sound(L).
+    inertial light(L).
+    inertial guides(L).
+    inertial attitude_stress(X).
+    inertial normative_stress(X).
+    inertial control_stress(X).
+    inertial at(O,L).
+	
+initially: 
+	
+	%% Observation environment
+	sound(3). light(3). guides(1).
+
+	%attitude_stress(1). normative_stress(1). control_stress(1). %% 111	(1)
+	%attitude_stress(1). normative_stress(1). control_stress(3). %% 113	(3)
+	%attitude_stress(1). normative_stress(3). control_stress(3). %% 133	(9)
+	%attitude_stress(2). normative_stress(3). control_stress(3). %% 233	(18)
+	%attitude_stress(3). normative_stress(3). control_stress(1). %% 331	(25)
+	attitude_stress(3). normative_stress(3). control_stress(3). %% 333	(27)	
+	
+	%at(human,lobby).
+	%at(human,queue).
+	at(human,food).
+	
+	noConcurrency.
+
+goal: 
+
+	%at(human,queue) ? (4)
+	%at(human,food) ? (6)
+	at(human,table) ? (6)

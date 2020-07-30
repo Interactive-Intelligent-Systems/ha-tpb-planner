@@ -1,0 +1,2 @@
+actor(human).
+area(lobby). area(queue). area(food). area(table). 

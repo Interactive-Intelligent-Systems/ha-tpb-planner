@@ -41,10 +41,10 @@ The agent models a human agent, utilizing the observed human actions in the envi
 
 ### Authors
 
-Andreas Brännström {andreasb@cs.umu.se}
-Timotheus Kampik {tkampik@cs.umu.se}
-Juan Carlos Nieves {jcnieves@cs.umu.se}
+* Andreas Brännström {andreasb@cs.umu.se}
+* Timotheus Kampik {tkampik@cs.umu.se}
+* Juan Carlos Nieves {jcnieves@cs.umu.se}
 
-Department of Computing Science
-Umeå university
-SE-901 87, Umeå, Sweden
+Department of Computing Science  
+Umeå university  
+SE-901 87, Umeå, Sweden  
